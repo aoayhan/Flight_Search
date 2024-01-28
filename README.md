@@ -1,6 +1,8 @@
 # Amadeus Flight Search
 
 Demonstration: https://youtu.be/anHYrm4Q6A4
+
+Apps photos are located at the end.
 ### Setting Up and Running the Flight Search App
 
 This guide provides instructions on how to set up and run the Flight Search App, a React-based application.
@@ -81,5 +83,7 @@ App.js: The main application component.
 mock-data-script.py: The script I created to generate flight data consisting of airport codes, cities, departure and arrival dates and times, flight duration and price.
 
 mockFlightsDatacopy.json: Mock data representing flight information.
+<img width="1440" alt="Screenshot 2024-01-28 at 21 15 58" src="https://github.com/aoayhan/Flight_Search/assets/106978383/d8a63671-5473-4009-bb89-a51ff2307318">
+<img width="1440" alt="Screenshot 2024-01-28 at 16 59 10" src="https://github.com/aoayhan/Flight_Search/assets/106978383/b9dd6111-60b6-4edd-8bd8-7c8484e26f80">
 
 This guide should help you get the Flight Search App up and running on your local machine. For further assistance, refer to the React and Material-UI documentation.
