@@ -22,10 +22,10 @@ import logo from './navlogo.png'; // Adjust the path as necessary
 //import mockAirportData from './mockAirportData.json';
 import mockFlightsData from './mockFlightsDatacopy.json'; // adjust the path as necessary
 import { Tooltip } from '@mui/material';
-import SortByAlphaIcon from '@mui/icons-material/SortByAlpha'; // For alphabetical sorting
 import AccessTimeIcon from '@mui/icons-material/AccessTime'; // For duration sorting
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'; // For ascending sorting
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'; // For descending sorting
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 
 
 
@@ -329,7 +329,7 @@ return (
           <ToggleButtonGroup exclusive onChange={handleSort} aria-label="text sorting" style={{ width: '100%',padding: '8px',marginBottom: '20px' }}>
             <Tooltip title="Sort by price" placement="top">
               <ToggleButton value="price" aria-label="sort by price">
-                <SortByAlphaIcon />
+                <LocalAtmIcon />
                 &nbsp; Price
               </ToggleButton>
             </Tooltip>
