@@ -1,0 +1,88 @@
+.navbar {
+  width: 100%;
+  padding: 0.5rem 1rem; /* Add padding to the navbar */
+  background-color: #57d8e9; /* Change this to match your theme color */
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); /* Optional: adds a slight shadow for depth */
+  display: flex;
+  align-items: center; /* Aligns the logo vertically */
+  position: fixed; /* Fixes the navbar at the top */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensures the navbar is above other items */
+}
+
+.logo {
+  height: 45px; /* Adjust the size as needed */
+  width: auto; /* Keeps the aspect ratio of the logo */
+}
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-image: url('backa.png'); /* Replace with your image file path */
+  background-size: cover; /* Adjust the sizing as needed */
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* This will make the background image fixed */
+}
+.App {
+  padding-top: 60px; /* Adjust this value based on the actual height of your navbar */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the top */
+  padding-top: 10vh; /* Add top padding to position your content */
+  height: 100vh;
+  width: 100%;
+}
+
+.search-box {
+  display: flex;
+  justify-content: space-between; /* Adjust as needed for spacing between boxes */
+  width: 100%;
+  max-width: 850px; /* Adjust as needed for container width */
+  height: 200px;
+}
+.date-picker-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-left: 10px; /* Adjust as needed for spacing between date pickers */
+  
+}
+/* ... existing styles ... */
+
+/* New container for the toggle button and return date */
+.box {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adjust the margin for the toggle button group to only apply to the bottom */
+.MuiToggleButtonGroup-root {
+  margin-bottom: 3px;
+}
+
+/* Ensure the toggle buttons take up full width of the toggle group */
+.MuiToggleButton-root {
+  width: 100%;
+}
+
+/* Styles for the flight toggle buttons */
+.flight-toggle-buttons {
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  align-items: center; /* Center vertically */
+
+}
+
+/* You might want to adjust the size of the buttons themselves */
+.flight-toggle-buttons .MuiToggleButton-root {
+  padding: 0px 12px; /* Adjust padding as needed */
+  /* Add any additional styling you need for the buttons here */
+}
+.search-button {
+  height: 100%; /* Make the button the same height as the input fields */
+  margin-left: auto;
+  /* Add any additional styling you might need */
+}

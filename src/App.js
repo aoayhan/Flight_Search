@@ -7,9 +7,6 @@ import ToggleButton from '@mui/material/ToggleButton';
 import dayjs from 'dayjs';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemButton from '@mui/material/ListItemButton';
-import { Divider } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
@@ -31,6 +28,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'; // For ascending 
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'; // For descending sorting
 
 
+
 dayjs.locale('tr');
 
 function App() {
@@ -44,29 +42,14 @@ function App() {
   const [departureDateError, setDepartureDateError] = useState(false);
   const [returnDateError, setReturnDateError] = useState(false);
   const [flights, setFlights] = useState([]);
-  const [sortConfig, setSortConfig] = useState({ key: 'departureTime', direction: 'ascending' });
-  const [outboundFlights, setOutboundFlights] = useState([]);
+  const [outFlights, setOutFlights] = useState([]);
   const [returnFlights, setReturnFlights] = useState([]);
-  const sortFlights = (key) => {
-    setSortConfig((currentSortConfig) => {
-      const direction = currentSortConfig.key === key && currentSortConfig.direction === 'ascending' ? 'descending' : 'ascending';
-      const sortedFlights = [...flights].sort((a, b) => {
-        if (a[key] < b[key]) {
-          return direction === 'ascending' ? -1 : 1;
-        }
-        if (a[key] > b[key]) {
-          return direction === 'ascending' ? 1 : -1;
-        }
-        return 0;
-      });
-      setFlights(sortedFlights);
-      return { key, direction };
-    });
-  };
-  
+  const [flightsSearched, setFlightsSearched] = useState(false); // State to track whether flights have been searched or not
+  const [returnFlightsSearched, setReturnFlightsSearched] = useState(false); // State to track whether flights have been searched or not
+
+  const [sortConfig, setSortConfig] = useState({ key: 'departureTime', direction: 'ascending' });
+
   const handleSearchClick = () => {
-    console.log('Search clicked');
-  
     // Reset errors and results
     let isError = false;
     setFlights([]);
@@ -75,7 +58,6 @@ function App() {
     if (!departureAirport) {
       setDepartureAirportError(true);
       isError = true;
-      console.log('Error: No departure airport selected');
     } else {
       setDepartureAirportError(false);
     }
@@ -83,7 +65,6 @@ function App() {
     if (!arrivalAirport) {
       setArrivalAirportError(true);
       isError = true;
-      console.log('Error: No arrival airport selected');
     } else {
       setArrivalAirportError(false);
     }
@@ -91,7 +72,6 @@ function App() {
     if (!departureDate) {
       setDepartureDateError(true);
       isError = true;
-      console.log('Error: No departure date selected');
     } else {
       setDepartureDateError(false);
     }
@@ -99,7 +79,6 @@ function App() {
     if (!isOneWay && !returnDate) {
       setReturnDateError(true);
       isError = true;
-      console.log('Error: No return date selected');
     } else {
       setReturnDateError(false);
     }
@@ -115,6 +94,8 @@ function App() {
       });
   
       if (!isError) {
+    setFlightsSearched(true);
+
         const outboundFlights = mockFlightsData.filter((flight) => {
           const matchesDepartureAirport = flight.departureAirport.code === departureAirport.code;
           const matchesArrivalAirport = flight.arrivalAirport.code === arrivalAirport.code;
@@ -124,6 +105,8 @@ function App() {
     
         let returnFlights = [];
         if (!isOneWay) {
+    setReturnFlightsSearched(true);
+
           returnFlights = mockFlightsData.filter((flight) => {
             const matchesDepartureAirport = flight.departureAirport.code === arrivalAirport.code;
             const matchesArrivalAirport = flight.arrivalAirport.code === departureAirport.code;
@@ -134,9 +117,8 @@ function App() {
     
         const combinedFlights = [...outboundFlights, ...returnFlights];
     
-        console.log('Outbound Flights:', outboundFlights);
-        console.log('Return Flights:', returnFlights);
-        console.log('Combined Flights:', combinedFlights);
+        setOutFlights(outboundFlights);
+        setReturnFlights(returnFlights);
         setFlights(combinedFlights);
       }
     };
@@ -147,8 +129,8 @@ function App() {
         // Determine the new direction
         const newDirection = prevSortConfig.key === newSortKey && prevSortConfig.direction === 'ascending' ? 'descending' : 'ascending';
         
-        // Perform the sorting
-        const sortedFlights = [...flights].sort((a, b) => {
+        // Perform the sorting for outbound flights
+        const sortedOutFlights = [...outFlights].sort((a, b) => {
           if (a[newSortKey] < b[newSortKey]) {
             return newDirection === 'ascending' ? -1 : 1;
           }
@@ -158,14 +140,27 @@ function App() {
           return 0;
         });
   
-        // Update the flights state with the sorted flights
-        setFlights(sortedFlights);
-  
+        // Perform the sorting for return flights
+        const sortedReturnFlights = [...returnFlights].sort((a, b) => {
+          if (a[newSortKey] < b[newSortKey]) {
+            return newDirection === 'ascending' ? -1 : 1;
+          }
+          if (a[newSortKey] > b[newSortKey]) {
+            return newDirection === 'ascending' ? 1 : -1;
+          }
+          return 0;
+        });
+    
+        // Update the state with the sorted flights
+        setOutFlights(sortedOutFlights);
+        setReturnFlights(sortedReturnFlights);
+    
         // Return the new sort configuration
         return { key: newSortKey, direction: newDirection };
       });
     }
   };
+  
   
   
   const handleDepartureAirportChange = (event, newValue) => {
@@ -175,16 +170,6 @@ function App() {
   const handleArrivalAirportChange = (event, newValue) => {
     setArrivalAirport(newValue);
     setArrivalAirportError(!newValue);
-  };
-  const handleDepartureDateChange = (newValue) => {
-    setDepartureDate(newValue);
-    // Check if newValue is truthy. If not, set error.
-    setDepartureDateError(newValue ? false : true);
-  };
-  const handleReturnDateChange = (newValue) => {
-    setReturnDate(newValue);
-    // Check if newValue is truthy or if it's a one-way trip. If not, set error.
-    setReturnDateError(isOneWay || newValue ? false : true);
   };
   
   
@@ -215,13 +200,12 @@ const airports = mockAirports.map((airport) => ({
   label: `${airport.name} (${airport.code}), ${airport.city}`
 }));
 
-  // and include these handlers in your Autocomplete components
-  console.log("this is flights" , flights);
-
 return (
   <div className="App">
     <nav className="navbar">
+    <a href="/">
       <img src={logo} alt="Company Logo" className="logo" />
+    </a>
     </nav>
 
     {/* Search Box for Airports */}
@@ -270,7 +254,7 @@ return (
         <Grid item xs={3} sm={3}>
           <Autocomplete
             id="arrival-airport"
-            options={airports}
+            options={airports.filter(airport => airport.code !== departureAirport?.code)}
             getOptionLabel={(option) => option.label}
             isOptionEqualToValue={(option, value) => option.code === value.code}
             renderInput={(params) => (
@@ -293,9 +277,21 @@ return (
             label="Departure Date"
             value={departureDate}
             disablePast
-            onChange={setDepartureDate}
+            onChange={(newValue) => {
+              setDepartureDate(newValue);
+              setDepartureDateError(!newValue); // Set error if newValue is null
+              // Clear return date if it is earlier than the new departure date
+              if (newValue && returnDate && dayjs(newValue).isAfter(dayjs(returnDate))) {
+                setReturnDate(null);
+              }
+            }}
             format="DD/MM/YYYY"
-            renderInput={(params) => <TextField {...params} />}
+            slotProps={{
+              textField: {
+                error: departureDateError,
+                helperText: departureDateError ? 'Please select a departure date' : '',
+              },
+            }}
           />
         </Grid>
 
@@ -305,10 +301,19 @@ return (
             label="Return Date"
             value={returnDate}
             disablePast
-            onChange={setReturnDate}
+            minDate={departureDate} 
+            onChange={(newValue) => {
+              setReturnDate(newValue);
+              setReturnDateError(isOneWay ? false : !newValue); // Set error if it's not a one-way trip and newValue is null
+            }}
             format="DD/MM/YYYY"
-            renderInput={(params) => <TextField {...params} />}
-            disabled={isOneWay}
+            slotProps={{
+              textField: {
+                error: returnDateError,
+                helperText: returnDateError ? 'Please select a return date' : '',
+                disabled: isOneWay,
+              },
+            }}
           />
         </Grid>
 
@@ -320,7 +325,8 @@ return (
           </Grid>
 
           {/* Sorting Buttons */}
-          <ToggleButtonGroup exclusive onChange={handleSort} aria-label="text sorting" style={{ marginBottom: '20px' }}>
+          {flightsSearched && ( 
+          <ToggleButtonGroup exclusive onChange={handleSort} aria-label="text sorting" style={{ width: '100%',padding: '8px',marginBottom: '20px' }}>
             <Tooltip title="Sort by price" placement="top">
               <ToggleButton value="price" aria-label="sort by price">
                 <SortByAlphaIcon />
@@ -334,7 +340,8 @@ return (
               </ToggleButton>
             </Tooltip>
             <Tooltip title="Sort by departure time" placement="top">
-              <ToggleButton value="departureTime" aria-label="sort by departure time">
+              <ToggleButton value="departureTime" aria-label="sort by departure time" >
+
                 <ArrowUpwardIcon />
                 &nbsp; Departure Time
               </ToggleButton>
@@ -346,14 +353,19 @@ return (
               </ToggleButton>
             </Tooltip>
           </ToggleButtonGroup>
-
+)}
         {/* Flights List */}
     {/* This should be placed right after the sorting buttons grid */}
-    <List sx={{ width: '100%', bgcolor: 'rgba(255, 255, 255, 0.3)',borderRadius: '16px',overflow: 'hidden' }}>
-      {flights.map((flight, index) => (
+    {flightsSearched ? (
+  <List sx={{ width: '100%', bgcolor: 'rgba(255, 255, 255, 0)', borderRadius: '16px', overflow: 'hidden' }}>
+    <Typography variant="h5" gutterBottom>
+      Outbound Flights
+    </Typography>
+    {outFlights.length > 0 ? (
+      outFlights.map((flight, index) => (
         <React.Fragment key={flight.id}>
           <ListItem alignItems="flex-start" key={flight.id} disablePadding>
-            <Paper elevation={2} sx={{ width: '100%', padding: 2, margin: 1, backgroundColor: 'rgba(255, 255, 255, 0.5)', borderRadius: '16px'}}>
+            <Paper elevation={2} sx={{ width: '100%', padding: 2, margin: 1, backgroundColor: 'rgba(255, 255, 255, 0.5)', borderRadius: '16px' }}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={3}>
                   <Typography variant="subtitle1" gutterBottom>
@@ -362,10 +374,10 @@ return (
                 </Grid>
                 <Grid item xs={12} sm={9}>
                   <Typography variant="body2" color="textSecondary">
-                    <FlightTakeoffIcon /> Departure: {dayjs(flight.departureDate).format('DD/MM/YYYY')} {flight.departureTime}
+                    <FlightTakeoffIcon /> Departure: {flight.departureAirport.name} {flight.departureAirport.code}, {flight.departureAirport.city} - {dayjs(flight.departureDate).format('DD/MM/YYYY')} {flight.departureTime}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    <FlightLandIcon /> Arrival: {dayjs(flight.arrivalDate).format('DD/MM/YYYY')} {flight.arrivalTime}
+                    <FlightLandIcon /> Arrival: {flight.arrivalAirport.name} {flight.arrivalAirport.code}, {flight.arrivalAirport.city} - {dayjs(flight.arrivalDate).format('DD/MM/YYYY')} {flight.arrivalTime}
                   </Typography>
                   <Typography variant="body2">
                     Duration: {flight.duration} hours
@@ -377,10 +389,60 @@ return (
               </Grid>
             </Paper>
           </ListItem>
-          {index < flights.length - 1 && <Divider />}
         </React.Fragment>
-      ))}
-    </List>
+      ))
+    ) : (
+      <Typography variant="body1">
+        There are no available outbound flights on this date.
+      </Typography>
+    )}
+  </List>
+) : null}
+
+{/* Returning flight list */}
+{returnFlightsSearched && !isOneWay ? (
+  <List sx={{ width: '100%', bgcolor: 'rgba(255, 255, 255, 0)', borderRadius: '16px', overflow: 'hidden' }}>
+    <Typography variant="h5" gutterBottom>
+      Returning Flights
+    </Typography>
+    {returnFlights.length > 0 ? (
+      returnFlights.map((flight, index) => (
+        <React.Fragment key={flight.id}>
+          <ListItem alignItems="flex-start" key={flight.id} disablePadding>
+            <Paper elevation={2} sx={{ width: '100%', padding: 2, margin: 1, backgroundColor: 'rgba(255, 255, 255, 0.5)', borderRadius: '16px' }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={3}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    {flight.airline} - Flight {flight.id}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={9}>
+                  <Typography variant="body2" color="textSecondary">
+                    <FlightTakeoffIcon /> Departure: {flight.departureAirport.name} {flight.departureAirport.code}, {flight.departureAirport.city} - {dayjs(flight.departureDate).format('DD/MM/YYYY')} {flight.departureTime}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <FlightLandIcon /> Arrival: {flight.arrivalAirport.name} {flight.arrivalAirport.code}, {flight.arrivalAirport.city} - {dayjs(flight.arrivalDate).format('DD/MM/YYYY')} {flight.arrivalTime}
+                  </Typography>
+                  <Typography variant="body2">
+                    Duration: {flight.duration} hours
+                  </Typography>
+                  <Typography variant="body2">
+                    Price: ${flight.price}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Paper>
+          </ListItem>
+        </React.Fragment>
+      ))
+    ) : (
+      <Typography variant="body1">
+        There are no available returning flights on this date.
+      </Typography>
+    )}
+  </List>
+) : null}
+
         </Grid>
       </LocalizationProvider>
 
