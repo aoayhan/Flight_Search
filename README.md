@@ -74,12 +74,12 @@ Material-UI (MUI): A React UI framework for implementing Google's Material Desig
 
 dayjs: A lightweight JavaScript date library.
 
-Application Structure
+#### Application Structure
 
 App.js: The main application component.
+
 mock-data-script.py: The script I created to generate flight data consisting of airport codes, cities, departure and arrival dates and times, flight duration and price.
 
 mockFlightsDatacopy.json: Mock data representing flight information.
 
-Conclusion
 This guide should help you get the Flight Search App up and running on your local machine. For further assistance, refer to the React and Material-UI documentation.
