@@ -7,10 +7,7 @@ Apps photos are located at the end.
 
 This guide provides instructions on how to set up and run the Flight Search App, a React-based application.
 
-Before you begin, ensure that you have Node.js installed on your system:
-
-
-Installation
+#### Installation
 Follow these steps to set up the application on your local machine:
 
 1. Clone the Repository
