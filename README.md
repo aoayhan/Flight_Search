@@ -84,6 +84,8 @@ mock-data-script.py: The script I created to generate flight data consisting of 
 
 mockFlightsDatacopy.json: Mock data representing flight information.
 <img width="1440" alt="Screenshot 2024-01-28 at 21 15 58" src="https://github.com/aoayhan/Flight_Search/assets/106978383/d8a63671-5473-4009-bb89-a51ff2307318">
-<img width="1440" alt="Screenshot 2024-01-28 at 16 59 10" src="https://github.com/aoayhan/Flight_Search/assets/106978383/b9dd6111-60b6-4edd-8bd8-7c8484e26f80">
+<img width="1440" alt="Screenshot 2024-01-28 at 21 30 53" src="https://github.com/aoayhan/Flight_Search/assets/106978383/77b1aa57-a2f2-46f4-bd56-88ea3fceb356">
 
 This guide should help you get the Flight Search App up and running on your local machine. For further assistance, refer to the React and Material-UI documentation.
+
+To check for empty data case (when there are no flights available, you can search for flights from JFK to LAX on 23.02.2024
